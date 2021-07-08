@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Tidyndr: An R package for analysis of the Nigeria HIV National Data Repository</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Balogun Stephen, MD, MPH" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/useR.css" rel="stylesheet" />
+    <link href="libs/remark-css/useR-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Tidyndr: An R package for analysis of the Nigeria HIV National Data Repository
+### Balogun Stephen, MD, MPH
+
+---
+
+
+
+
+
+class: chapter-slide
+
+#&lt;span style="font-family: 'Cormorant Upright', serif; color: white; text-shadow: 2px 2px #333"&gt; Introduction&lt;/span&gt;
+
+???
+
+Hi!
+
+I am Balogun Stephen and thanks for tunning in to my lightning talk on data analysis using the tidyndr
+---
+
+## HIV/AIDS - the global pandemic
+
+&lt;br/&gt;
+.pull-left[
+&lt;svg viewBox="0 0 448 512" style="height:1em;position:relative;display:inline-block;top:.1em;" xmlns="http://www.w3.org/2000/svg"&gt;  &lt;path d="M6.1 444.3c-9.6 10.8-7.5 27.6 4.5 35.7l68.8 27.9c9.9 6.7 23.3 5 31.3-3.8l91.8-101.9-79.2-87.9-117.2 130zm435.8 0s-292-324.6-295.4-330.1c15.4-8.4 40.2-17.9 77.5-17.9s62.1 9.5 77.5 17.9c-3.3 5.6-56 64.6-56 64.6l79.1 87.7 34.2-38c28.7-31.9 33.3-78.6 11.4-115.5l-43.7-73.5c-4.3-7.2-9.9-13.3-16.8-18-40.7-27.6-127.4-29.7-171.4 0-6.9 4.7-12.5 10.8-16.8 18l-43.6 73.2c-1.5 2.5-37.1 62.2 11.5 116L337.5 504c8 8.9 21.4 10.5 31.3 3.8l68.8-27.9c11.9-8 14-24.8 4.3-35.6z"&gt;&lt;/path&gt;&lt;/svg&gt; - First case of HIV was detected 40 years ago  
+
+In 2020:
+
+&lt;svg viewBox="0 0 512 512" style="height:1em;position:relative;display:inline-block;top:.1em;" xmlns="http://www.w3.org/2000/svg"&gt;  &lt;title&gt;&lt;/title&gt;  &lt;circle cx="256" cy="56" r="56"&gt;&lt;/circle&gt;  &lt;path d="M304,128H208a64.19,64.19,0,0,0-64,64V299.52c0,10.85,8.43,20.08,19.27,20.47A20,20,0,0,0,184,300V200.27a8.18,8.18,0,0,1,7.47-8.25,8,8,0,0,1,8.53,8V489a23,23,0,0,0,23,23h0a23,23,0,0,0,23-23V346.34A10.24,10.24,0,0,1,255.33,336,10,10,0,0,1,266,346V489a23,23,0,0,0,23,23h0a23,23,0,0,0,23-23V200.27a8.18,8.18,0,0,1,7.47-8.25,8,8,0,0,1,8.53,8v99.52c0,10.85,8.43,20.08,19.27,20.47A20,20,0,0,0,368,300V192A64.19,64.19,0,0,0,304,128Z"&gt;&lt;/path&gt;&lt;/svg&gt; - 1.5 million new infections   
+
+&lt;svg viewBox="0 0 640 512" style="height:1em;position:relative;display:inline-block;top:.1em;" xmlns="http://www.w3.org/2000/svg"&gt;  &lt;path d="M624 352h-16V243.9c0-12.7-5.1-24.9-14.1-33.9L494 110.1c-9-9-21.2-14.1-33.9-14.1H416V48c0-26.5-21.5-48-48-48H48C21.5 0 0 21.5 0 48v320c0 26.5 21.5 48 48 48h16c0 53 43 96 96 96s96-43 96-96h128c0 53 43 96 96 96s96-43 96-96h48c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16zM160 464c-26.5 0-48-21.5-48-48s21.5-48 48-48 48 21.5 48 48-21.5 48-48 48zm144-248c0 4.4-3.6 8-8 8h-56v56c0 4.4-3.6 8-8 8h-48c-4.4 0-8-3.6-8-8v-56h-56c-4.4 0-8-3.6-8-8v-48c0-4.4 3.6-8 8-8h56v-56c0-4.4 3.6-8 8-8h48c4.4 0 8 3.6 8 8v56h56c4.4 0 8 3.6 8 8v48zm176 248c-26.5 0-48-21.5-48-48s21.5-48 48-48 48 21.5 48 48-21.5 48-48 48zm80-208H416V144h44.1l99.9 99.9V256z"&gt;&lt;/path&gt;&lt;/svg&gt; - 690 thousand people died of AIDS-related                                           illnesses
+
+&lt;svg viewBox="0 0 512 512" style="height:1em;position:relative;display:inline-block;top:.1em;" xmlns="http://www.w3.org/2000/svg"&gt;  &lt;title&gt;&lt;/title&gt;  &lt;path d="M336,256c-20.56,0-40.44-9.18-56-25.84-15.13-16.25-24.37-37.92-26-61-1.74-24.62,5.77-47.26,21.14-63.76S312,80,336,80c23.83,0,45.38,9.06,60.7,25.52,15.47,16.62,23,39.22,21.26,63.63h0c-1.67,23.11-10.9,44.77-26,61C376.44,246.82,356.57,256,336,256Zm66-88h0Z"&gt;&lt;/path&gt;  &lt;path d="M467.83,432H204.18a27.71,27.71,0,0,1-22-10.67,30.22,30.22,0,0,1-5.26-25.79c8.42-33.81,29.28-61.85,60.32-81.08C264.79,297.4,299.86,288,336,288c36.85,0,71,9,98.71,26.05,31.11,19.13,52,47.33,60.38,81.55a30.27,30.27,0,0,1-5.32,25.78A27.68,27.68,0,0,1,467.83,432Z"&gt;&lt;/path&gt;  &lt;path d="M147,260c-35.19,0-66.13-32.72-69-72.93C76.58,166.47,83,147.42,96,133.45,108.86,119.62,127,112,147,112s38,7.66,50.93,21.57c13.1,14.08,19.5,33.09,18,53.52C213.06,227.29,182.13,260,147,260Z"&gt;&lt;/path&gt;  &lt;path d="M212.66,291.45c-17.59-8.6-40.42-12.9-65.65-12.9-29.46,0-58.07,7.68-80.57,21.62C40.93,316,23.77,339.05,16.84,366.88a27.39,27.39,0,0,0,4.79,23.36A25.32,25.32,0,0,0,41.72,400h111a8,8,0,0,0,7.87-6.57c.11-.63.25-1.26.41-1.88,8.48-34.06,28.35-62.84,57.71-83.82a8,8,0,0,0-.63-13.39C216.51,293.42,214.71,292.45,212.66,291.45Z"&gt;&lt;/path&gt;&lt;/svg&gt; - 37.6 million people were living with HIV/AIDS  
+
+&lt;svg viewBox="0 0 576 512" style="height:1em;position:relative;display:inline-block;top:.1em;" xmlns="http://www.w3.org/2000/svg"&gt;  &lt;path d="M112 32C50.1 32 0 82.1 0 144v224c0 61.9 50.1 112 112 112s112-50.1 112-112V144c0-61.9-50.1-112-112-112zm48 224H64V144c0-26.5 21.5-48 48-48s48 21.5 48 48v112zm139.7-29.7c-3.5-3.5-9.4-3.1-12.3.8-45.3 62.5-40.4 150.1 15.9 206.4 56.3 56.3 143.9 61.2 206.4 15.9 4-2.9 4.3-8.8.8-12.3L299.7 226.3zm229.8-19c-56.3-56.3-143.9-61.2-206.4-15.9-4 2.9-4.3 8.8-.8 12.3l210.8 210.8c3.5 3.5 9.4 3.1 12.3-.8 45.3-62.6 40.5-150.1-15.9-206.4z"&gt;&lt;/path&gt;&lt;/svg&gt; &lt;svg viewBox="0 0 512 512" style="height:1em;position:relative;display:inline-block;top:.1em;" xmlns="http://www.w3.org/2000/svg"&gt;  &lt;path d="M256 48c114.953 0 208 93.029 208 208 0 114.953-93.029 208-208 208-114.953 0-208-93.029-208-208 0-114.953 93.029-208 208-208m0-40C119.033 8 8 119.033 8 256s111.033 248 248 248 248-111.033 248-248S392.967 8 256 8zm0 56C149.961 64 64 149.961 64 256s85.961 192 192 192 192-85.961 192-192S362.039 64 256 64zm0 44c19.882 0 36 16.118 36 36s-16.118 36-36 36-36-16.118-36-36 16.118-36 36-36zm117.741 98.023c-28.712 6.779-55.511 12.748-82.14 15.807.851 101.023 12.306 123.052 25.037 155.621 3.617 9.26-.957 19.698-10.217 23.315-9.261 3.617-19.699-.957-23.316-10.217-8.705-22.308-17.086-40.636-22.261-78.549h-9.686c-5.167 37.851-13.534 56.208-22.262 78.549-3.615 9.255-14.05 13.836-23.315 10.217-9.26-3.617-13.834-14.056-10.217-23.315 12.713-32.541 24.185-54.541 25.037-155.621-26.629-3.058-53.428-9.027-82.141-15.807-8.6-2.031-13.926-10.648-11.895-19.249s10.647-13.926 19.249-11.895c96.686 22.829 124.283 22.783 220.775 0 8.599-2.03 17.218 3.294 19.249 11.895 2.029 8.601-3.297 17.219-11.897 19.249z"&gt;&lt;/path&gt;&lt;/svg&gt; - equitable access remains a challenge.
+]
+
+.pull-right[
+
+&lt;left&gt;
+&lt;img src="./snips/unaids.png"
+alt="Logo of the Joint United Nations Programme on HIV/AIDS (UNAIDS), an innovative joint venture of the United Nations family which brings together the efforts and resources of 11 UN system organizations to unite the world against AIDS"
+height="100px" /&gt;
+&lt;/left&gt;
+
+UNAIDS 95-95-95 target by 2030 to achieve epidemiologic control.
+
++ 95% of people living with HIV know their HIV status   
+
++ 95% accessing treatment 
+
++ 95% of persons on treatment virally suppressed 
+    
+]  
+
+
+???
+
+- Forty years have passed since the first case of HIV/AIDS. Yet, in the year 2020, 1.5 million people were newly infected with the virus
+
+- 690 thousand people died of AIDS-related illnesses; 37.6 million people were living with HIV/AIDS.
+
+- While remarkable progress has been recorded in the last decade, inequity between and within countries continues to drive the epidemic. Though some countries have attained epidemic control, many are off-track with COVID-19, conflict, and humanitarian emergencies reversing the gains.
+- The UNAIDS has set ambitious targets to achieve epidemic control of HIV/AIDS by 2030 through identification of at least 95% of persons living with virus, retaining 95% of those identified on treatment and achieving viral suppression in at least 95% of those on treatment.
+---
+
+## Nigeria
+
+.pull-left[
+- Estimated 1.9 million people living with HIV.
+
+- In the year 2020:
+    
+    - 73% of people living with HIV had been diagnosed
+
+    - 89% of those diagnosed were accessing treatment
+
+    - 78% of those accessing treatment were virally suppressed.
+    
+- Need for data utilization at every level
+
+]
+
+
+.pull-right[
+
+&lt;left&gt;
+&lt;img src="./snips/hiv distribution in nigeria.png"
+alt="Prevalence of HIV across the different states in Nigeria as at Dec 2019 based on the result of the NAIIS survey conducted in 2018 showing wide disparity between states"
+height="400px" /&gt;
+&lt;/left&gt;
+
+  .footnote[
+  &lt;span style="font-size: 9px"&gt;
+  &lt;i style="font-weight: 600"&gt;Source:&lt;/i&gt; Revised National HIV and AIDS Strategic Framework 2019-2021, Nigeria
+  &lt;/span&gt;
+  ]
+]
+
+
+???
+
+- Nigeria has the fourth-largest epidemic in the world with an estimated 1.9 million people living with HIV. 
+
+- At the end of 2020, the progress across the three 95s are: 73%-89%- and-78% with varying prevalence and progress across the states as shown by the map
+
+- To achieve the UNAIDS target, granular data at community, local government and sub-population levels must continuously be made available and utilized for informed decision.
+---
+
+## The National Data Repository - NDR
+
+- A repository of de-identified patient-level data from facilities across all the states in the country
+
+- Contains records of over 2000 reporting facilities and over 1.3 million PLHIV currently on treatment.
+
+- Restricted access [A public dashboard is available](https://ndr.shieldnigeriaproject.com/public/dashboard).
+
+&lt;br/&gt;
+
+.pull-left[
+&lt;img src="./snips/ndr1.png"
+alt="a snapshot of the NDR public dashboard showing the distribution of persons currently on treatment in the country as at April 2021"
+width="500px" /&gt;
+
+  .footnote[
+  &lt;span style="font-size: 9px"&gt;
+  &lt;i style="font-weight: 600"&gt;Source:&lt;/i&gt; The Nigeria National Data Repository (NDR) public dashboard
+  &lt;/span&gt;
+  ]
+]
+
+.pull-right[
+&lt;img src="./snips/ndr2.png"
+alt="a snapshot of the NDR public dashboard as at April 2021 showing the monthly viral load suppression rate by age age and sex"
+width="500px" /&gt;
+]
+
+&lt;br/&gt;
+&lt;br/&gt;
+&lt;br/&gt;
+
+
+
+???
+
+- In 2016, through the PEPFAR support, the journey to a National (HIV) Data Repository started. The repository contains the de-identified records of over 1.3 million HIV clients on treatment across the country. 
+
+- This is accessible to persons within the industry to track progress and improve programming at various levels. Linelist of these clients can be downloaded for further analysis and use. 
+
+- The pictures below show snapshot of the NDR public dashboard
+
+---
+class: center, middle, chapter-slide, inverse
+&lt;br/&gt;
+.pull-left[
+
+## &lt;i style="font-family: 'Cormorant Upright', serif; color: white"&gt; "It is essential to not only capture high-quality data, but to also continuously use and analyze the data to achieve maximum program impact.The only way to improve data is to use the data” &lt;/i&gt;
+]
+
+.pull-right[
+
+&lt;center&gt;
+&lt;img src="./snips/mer2.5.png"
+alt="front page of the PEPFAR Monitoring, Evaluation and Reporting Indicator refence guide version 2.5 released in September 2020"
+height="500px" /&gt;
+&lt;/center&gt;
+
+  .footnote[
+  &lt;span style="font-size: 9px"&gt;
+  &lt;i style="font-weight: 600"&gt;Source:&lt;/i&gt; PEPFAR DATIM
+  &lt;/span&gt;
+  ]
+
+]
+
+
+???
+
+According to the PEPFAR MER version 2.5,
+
+"It is essential to not only capture high-quality data, but to also continuously use and analyze the data to achieve maximum program impact.The only way to improve data is to use the data”
+
+
+---
+## NDR data use
+
+Analysis is traditionally conducted using spreadsheets. Challenges include:
+
++   The software must be installed on the user’s computer.
+
++   The user must be familiar with the formula for calculation of the indicator of interest.
+
++   Can be quite heavy and difficult to manipulate
+
++   It is error-prone. Sometimes these errors go unnoticed
+
++   Periodic analysis can be quite tedious and time-consuming
+
+
+
+???
+
+- However, analysis of the downloaded data is traditionally conducted in spreadsheet applications. 
+
+- While these provide a great platform, the downsides include: the software must be installed on the user’s computer, and the user must be familiar with the formula for the calculation. The point-and-click nature makes it error-prone, with difficult reproducibility. Also, performing the same analysis periodically can be quite tedious and time-consuming 
+---
+class: center, middle, chapter-slide
+
+#&lt;span style="font-family: 'Cormorant Upright', serif; color: white; text-shadow: 2px 2px #333"&gt; tidyndr package&lt;/span&gt;
+
+
+???
+
+- A cross-functional team of 7 clinical and data experts came together to put together the {tidyndr} package to support analysis of the NDR patient linelist.
+---
+
+## Design
+
+&lt;center&gt;
+&lt;img src="./snips/r4ds-general.png"
+alt="graphical representation of R4DS workflow made popular by Hadley Wickham designed by Allison Horst"
+height="450px" /&gt;
+&lt;/center&gt;
+
+.footnote[
+    &lt;span style="font-size: 9px; padding-left:50px"&gt;
+        &lt;i style="font-weight: 600"&gt;Artwork by&lt;/i&gt; @allison_horst
+    &lt;/span&gt;
+]
+
+
+???
+
+The package is designed in line with the data science workflow proposed by Hadley Wickham. Varying functions are responsible for importing, tidying, transforming, and summarizing the analysis.
+---
+
+## Supporting packages
+.pull-left[
+
+- dplyr
+
+- forcats
+
+- janitor
+
+- vroom
+
+- tidyr
+
+- tibble
+
+- lubridate
+
+- magrittr
+
+- purrr
+
+]
+.pull-right[
+&lt;img src="./snips/tidyverse_celestial.png"
+alt="a picture of logos of tidyverse packages"
+height="400px" /&gt;
+
+  .footnote[
+    &lt;span style="font-size: 9px"&gt;
+        &lt;i style="font-weight: 600"&gt;Artwork by&lt;/i&gt; @allison_horst
+    &lt;/span&gt;
+    ]
+
+]
+
+
+???
+
+Nine tidyverse and tidyverse-related packages were used in the development of the package.
+---
+
+## The package
+
+
+```r
+# from CRAN
+install.packages("tidyndr", dependencies = TRUE)
+
+# developmental version from github
+devtools::install_github("stephenbalogun/tidyndr", build_vignettes = TRUE)
+```
+
+&lt;br/&gt;
+
+.pull-left[
+#### Importing function
+
+```
+read_ndr()
+```
+#### Treatment function
+
+```
+1. tx_new()
+2. tx_curr()
+3. tx_appointment()
+4. tx_ml()
+5. tx_ml_outcomes()
+6. tx_rtt()
+7. tx_mmd()
+```
+]
+
+.pull-right[
+
+#### Viral Load functions
+
+```
+1. tx_vl_eligible()
+2. tx_pvls_den()
+3. tx_pvls_num()
+4. tx_vl_unsuppressed()
+```
+#### Summary functions
+
+```
+1. summarise_ndr()
+2. disaggregate()
+```
+]
+
+
+???
+
+- tidyndr can be installed from both github and CRAN
+
+- where possible, the functions are named similar to the PEPFAR program indicators that users are already familiar with
+
+- these functions are grouped into 1 importing function, 7 treatment-related functions, 4 viral load-related functions and 2 summary functions.
+---
+.pull-left[
+## Benefits
+
++ Fast platform for data analysis and automation of routine projects.
+
++ Reproducibility - eliminate random errors
+
++ Scalable to support the analysis of large-volume data
+
++ Support easy identification of program gaps and those responsible for tailored intervention
+
++ Provides a foundation upon which other relevant program applications can be built.
+
+&lt;br/&gt;
+&lt;i style="font-weight: 600; color: #75aadb"&gt;The NDR is still evolving, and the package is planned to evolve alongside&lt;/i&gt;
+
+]
+
+
+.pull-right[
+&lt;br/&gt;
+&lt;img src="./snips/achiever.png"
+alt="a snip of the demo shinyapp dashboard built on the {tidyndr} package showing the map of Nigeria and performance summary based on some indicators"
+height="250px" /&gt;
+
+&lt;hr/&gt;
+
+&lt;img src="./snips/performance.png"
+alt="a snip of the R script using tidyndr for routine analysis of program linelist"
+height="250px" /&gt;
+
+]
+
+???
+
+Benefits of the package includes:
+
++ It provides a fast platform for data analysis and automation of routine projects.
+
++ Analysis conducted using the package is reproducible
+
++ It can be used to analyse large volume of data
+
++ It supports easy identification of program gaps for tailored intervention; and
+
++ Provides a foundation upon which other relevant program applications can be built
+
++ the Shinyapps dashboard and the weekly detailed analysis shown on the right were built on the package.
+---
+class: center
+
+## Thank you! (Eshey pupo!!)
+
+.pull-left[
+![Picture of the presenter - Balogun Stephen Taiye](./snips/stbalo.jpg)
+
+
+&lt;span style="font-weight: 700"&gt;Co-authors: &lt;/span&gt; 
+Olanrewaju SC, Okunuga OO,Kolade T, Abone G, Murtala-Ibrahim F, Omuh H
+]
+
+
+
+.right[
+&lt;svg viewBox="0 0 512 512" style="height:1em;position:relative;display:inline-block;top:.1em;" xmlns="http://www.w3.org/2000/svg"&gt;  &lt;path d="M326.612 185.391c59.747 59.809 58.927 155.698.36 214.59-.11.12-.24.25-.36.37l-67.2 67.2c-59.27 59.27-155.699 59.262-214.96 0-59.27-59.26-59.27-155.7 0-214.96l37.106-37.106c9.84-9.84 26.786-3.3 27.294 10.606.648 17.722 3.826 35.527 9.69 52.721 1.986 5.822.567 12.262-3.783 16.612l-13.087 13.087c-28.026 28.026-28.905 73.66-1.155 101.96 28.024 28.579 74.086 28.749 102.325.51l67.2-67.19c28.191-28.191 28.073-73.757 0-101.83-3.701-3.694-7.429-6.564-10.341-8.569a16.037 16.037 0 0 1-6.947-12.606c-.396-10.567 3.348-21.456 11.698-29.806l21.054-21.055c5.521-5.521 14.182-6.199 20.584-1.731a152.482 152.482 0 0 1 20.522 17.197zM467.547 44.449c-59.261-59.262-155.69-59.27-214.96 0l-67.2 67.2c-.12.12-.25.25-.36.37-58.566 58.892-59.387 154.781.36 214.59a152.454 152.454 0 0 0 20.521 17.196c6.402 4.468 15.064 3.789 20.584-1.731l21.054-21.055c8.35-8.35 12.094-19.239 11.698-29.806a16.037 16.037 0 0 0-6.947-12.606c-2.912-2.005-6.64-4.875-10.341-8.569-28.073-28.073-28.191-73.639 0-101.83l67.2-67.19c28.239-28.239 74.3-28.069 102.325.51 27.75 28.3 26.872 73.934-1.155 101.96l-13.087 13.087c-4.35 4.35-5.769 10.79-3.783 16.612 5.864 17.194 9.042 34.999 9.69 52.721.509 13.906 17.454 20.446 27.294 10.606l37.106-37.106c59.271-59.259 59.271-155.699.001-214.959z"&gt;&lt;/path&gt;&lt;/svg&gt; &lt;span style="font-weight: 600; font-family: Verdana"&gt;taiye.rbind.io&lt;/span&gt;
+
+&lt;svg viewBox="0 0 496 512" style="height:1em;position:relative;display:inline-block;top:.1em;" xmlns="http://www.w3.org/2000/svg"&gt;  &lt;path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"&gt;&lt;/path&gt;&lt;/svg&gt; stephenbalogun/tidyndr
+
+&lt;svg viewBox="0 0 512 512" style="height:1em;position:relative;display:inline-block;top:.1em;" xmlns="http://www.w3.org/2000/svg"&gt;  &lt;path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"&gt;&lt;/path&gt;&lt;/svg&gt;: @eppydoc
+]
+
+
+???
+
+- We encourage you to try out the package, feedback, contributions and suggestions are welcomed.
+
+- Thank you for your time
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
